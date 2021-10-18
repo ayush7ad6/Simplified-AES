@@ -1,0 +1,7 @@
+__pycache__/
+project-env/
+.vscode/
+gfield.py  
+test.py 
+toNumeric.py  
+signature.py
