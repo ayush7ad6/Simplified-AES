@@ -1,72 +1,89 @@
-# import socket
+"""
+    author: AYUSH DUBEY 2019221 
+    @description: --Client file --
+                    modules(built-in) -- multiprocessing: sending and receiving message oriented pickles with ease
+                                         pickle: to send and receive objects
+                                         hashlib: to hash message using sha256
+                    modules(created) -- rsa: rsa class for encryption, decryption and compute public and private keys
+                                        encryption: aes variant encryption and key generation
+
+                    inputs -- message, secret key, client key parameters
+                    operations -- requests and receives server public key from server (server.py)
+                                  encrypts secret key and sends it to the server
+                                  encrypts plaintext and sends ciphertext to the server
+                                  sends client public key to the server
+                                  computes client signature by hasing message and sends it to the server
+"""
+#built in modules
 from multiprocessing.connection import Client, Listener
 import pickle
 import hashlib
 
-from numpy.lib.function_base import _SIGNATURE
-from numpy.testing._private.utils import clear_and_catch_warnings
-
+# created modules
+# encrypt(): for encryption returns ciphertext, getCiphertext(): to get ciphertext string, rsa: RSA class
 from rsa import encrypt, getCiphertext, rsa
+# encryption(): for aes encryption, keyGeneration(): for key generation
 from encryption import encryption, keyGeneration
 
 
-# s = socket.socket()
+print()
+print("-"*30 + "2019221 AYUSH DUBEY" + "-"*30)
+print()
+
 
 print("\n[+] Client Socket successfully created\n")
 
 serverPort = 12345
 
-
-# s.connect(('127.0.0.1', serverPort))
-# s.setblocking(1)
+# connecting with the server remote remote
 s = Client(('localhost', serverPort))
 
 
 while True:
-    message = input('Plaintext: ')
+    message = input('Plaintext: ')  # taking message input
 
-    secretKey = input('Secret Key: ')
+    secretKey = input('Secret Key: ')  # taking secret key input
 
     while True:
-        clientKey = {}
+        clientKey = {}  # client key parameters input and storing in dict
         print('\nEnter valid client key generation parameters: \n')
         clientKey['p'] = int(input('p: '))
         clientKey['q'] = int(input('q: '))
         clientKey['e'] = int(input('e: '))
 
+        # creating RSA instance for key parameters validation and public/private key generation
         clientRSA = rsa(clientKey['p'], clientKey['q'], clientKey['e'])
-        if(clientRSA.f == 0):
+        if(clientRSA.f == 0):  # break out of the loop if key parameter are valid
             break
 
+    # sending request to send server public key
     msg1 = '\n[+] Client requesting server public key\n'
     s.send(bytes(msg1, 'utf-8'))
 
+    # receiving server public key and storing in a dict
     print('\n[+] Receiving Server Public Key\n')
     serverKey = {}
     serverKey['n'] = int(s.recv().decode())
     serverKey['e'] = int(s.recv().decode())
 
-    # print('[+] Server key received {}\n'.format(serverKey))
-
-    # encrypting and sending secretkey
+    # encrypting and sending secretkey using server public key
     encryptedSecretKey = encrypt(secretKey, serverKey['n'], serverKey['e'])
-    #encryptedSecretKey = getCiphertext(encryptedSecretKey)
+    print('[+] Sending encrypted Secrety Key\n')
     data = pickle.dumps(encryptedSecretKey)
 
     encryptedSecretkeystr = getCiphertext(encryptedSecretKey)
-    # print(encryptedSecretkeystr)
     print('Encrypted Secrety Key: ', encryptedSecretkeystr)
     s.send(data)
 
-    # aes computation
+    # aes variant key generationa and computation
     keys = keyGeneration(secretKey)
     ciphterText = encryption(message, keys)
-    # print("\nCiphertext: ", ciphterText)
 
-    print("\n[+] Sending ciphertext\n")
+    print("\n[+] Sending ciphertext\n")  # sending computed ciphertext
     s.send(ciphterText.encode())
 
     # generating signature
+    # using sha256 as a one-way hash
     digest = hashlib.sha256(message.encode()).hexdigest()
     print('Digest: ', digest)
 
@@ -74,18 +91,14 @@ while True:
     signaturestr = getCiphertext(signature)
     print('Digital Signature: ', signaturestr)
 
-    print('\n[+] Sending Client Public Key')
+    print('\n[+] Sending Client Public Key')     # sending client pubilc key
     n = int(clientRSA.n)
     e = int(clientRSA.pubKey)
     s.send(str(n).encode())
     s.send(str(e).encode())
-    # ck = {'n': clientRSA.n, 'e': clientRSA.pubKey}
-    # data = pickle.dumps(ck)
-    # s.send(data)
 
-    print('\n[+] Sending Client Signature\n')
-    # print('signature original: ', signature)
-    # signature = ['123', '123']
+    print('\n[+] Sending Client Signature\n')  # sending client signature
+
     data = pickle.dumps(signature)
     s.send(data)
     break

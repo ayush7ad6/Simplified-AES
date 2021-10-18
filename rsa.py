@@ -1,7 +1,31 @@
+"""
+    author: AYUSH DUBEY 2019221 
+    @description: --RSA Class module --
+                    module(created) -
+                                    func
+                    rsa class for encryption, decryptiona and key generation
+                    parameters: Key Generation Paramters (p,q,r)
+                    variables: p,q,e (key generation parameters)
+                               n (p*q)
+                               phi
+                               prKey (private Key)
+                               pubKey (public key)
+                               plaintext (message to be encrypted)
+                               ciphertext (encrypted message)
+                               f (flag for key parameters validation)
+                    methods: Constructor: initialises key parameters, validates them and generates key if key parameters valid
+                             genkey(): generates public key and private upon validation else assigns f = 1
+                             validate(): checks the validity of key generation parameters  
+                             encrypt(): encrypts the passes plaintext with the private key using rsa algorithm principles
+                             decrypt(): decrypts the passes ciphertext with the public key using rsa algorithn principles
+"""
+
 from func import ConvertToInt, ConvertToStr, is_coprime, isPrime, is_coprime, ConvertToInt, ConvertToStr
+# importing methods from func module
 
 
 class rsa:
+    # constructor to assign key parameters, validate key parameter and generate private key
     def __init__(self, p, q, e):
         self.p = p
         self.q = q
@@ -18,8 +42,11 @@ class rsa:
 
     def validate(self):
 
-        flag = True
+        flag = True  # flage for validity TRUE assuming valid at start
         # check p
+        if (self.p == self.q) or (self.q == self.e):
+            print("Enter distinct values for p,q,e")
+            flag = False
         if self.p != int(self.p):
             print('{} is not an integer. Please enter a valid value for p'.format(
                 self.p))
@@ -58,46 +85,53 @@ class rsa:
         if flag == False:
             return False
 
-        self.pubKey = self.e
+        self.pubKey = self.e  # when valid assign public key to pubKey
         return True
 
     def genKey(self):
-        if self.validate() == True:
+        if self.validate() == True:  # generate key when valid key parameters
 
-            k = 2
+            k = 2  # taking k  = 2
+            # computing private key using rsa formula
             d = int((k * self.phi + 1)/self.e)
             self.prKey = d
             return d
         self.f = 1
 
-    def encrypt(self, plaintext):
+    def encrypt(self, plaintext):  # encrypting
         self.plaintext = plaintext
+        # converting plaintext to digits using convertToInt() for encryption
         plaintext = ConvertToInt(plaintext)
         cipher_arr = []
         while plaintext:
             rem = plaintext % 10
+            # rsa encryption formula encrypting each number corresponding to each character
             encrypt_digit = (rem**self.pubKey) % (self.n)
             cipher_arr.insert(0, encrypt_digit)
             plaintext = plaintext//10
+        # genCipherText() assigns ciphertext to the class variable in string form
         self.getCiphertext(cipher_arr)
-        return cipher_arr
+        return cipher_arr  # returns list
 
     def decrypt(self, ciphertext):
         plaintext = 0
         for i in ciphertext:
+            # decrypting each digit in the ciphertext
             decrypt_digit = (i**self.prKey) % (self.n)
             plaintext = plaintext * 10 + decrypt_digit
 
+        # finally converting the ciphertext (int) into string
         plaintext = ConvertToStr(plaintext)
 
         return plaintext
 
     def getCiphertext(self, ciphertextarr):
+        # converting list to string
         ciphertextarr = ' '.join(map(str, ciphertextarr))
         self.ciphertext = ciphertextarr
 
 
-def encrypt(plaintext, n, e):
+def encrypt(plaintext, n, e):  # equivalent to def encrypt(self, plaintext): for encryption with any key without instantiating a class
     plaintext = ConvertToInt(plaintext)
 
     cipher_arr = []
@@ -110,11 +144,13 @@ def encrypt(plaintext, n, e):
     return cipher_arr
 
 
+# # equivalent to def getCiphertext(self, ciphertextarr): for encryption with any key without instantiating a class
 def getCiphertext(ciphertextarr):
-    ciphertextarr = ' '.join(map(str, ciphertextarr))
+    ciphertextarr = ''.join(map(str, ciphertextarr))
     return ciphertextarr
 
 
+# equivalent to def decrypt(self, ciphertext): for decryption with any key without instantiating a class
 def decrypt(ciphertext, n, privateKey):
     plaintext = 0
     for i in ciphertext:
