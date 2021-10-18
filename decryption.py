@@ -7,6 +7,8 @@
                     methods -- formString(): create and returns a string from bit array with each block separated with a space
                                formBlocks(): returns a list from a stirng of bit array with each block separated with a space
                                encodeText(): calls formBlocks()
+                               toBits(): converts string into bit array for easy manipulation
+                               fromBits(): complimentary to toBits(), converts bit array into string
                                SubNib(): returns a string after substituting nibbles as per simplied aes variant
                                dSubNib(): works same as SubNib() but for decryption
                                RotNib(): returns a string after rotating rows as per simplied aes variant  
@@ -56,6 +58,24 @@ def formBlocks(text):
     return block.split()  # returning list
 
 
+def tobits(s):
+    result = []
+    for c in s:
+        bits = bin(ord(c))[2:]
+        bits = '00000000'[len(bits):] + bits
+        result.extend([int(b) for b in bits])
+    result = "".join(str(i) for i in result)
+    return result
+
+
+def frombits(bits):
+    chars = []
+    for b in range(len(bits) // 8):
+        byte = bits[b*8:(b+1)*8]
+        chars.append(chr(int(''.join([str(bit) for bit in byte]), 2)))
+    return ''.join(chars)
+
+
 def encodeText(msg):
 
     # p = msg.encode()
@@ -98,7 +118,7 @@ def RotNib(nibbles):  # shifting rows
 def keyGeneration(key0):
     n0 = '10000000'  # round constant bit array for x3
     n1 = '00110000'  # round constant bit array for x4
-
+    key0 = tobits(key0)  # converting string key into bit array
     key0 = encodeText(key0)
 
     keys = {}
@@ -210,9 +230,10 @@ def decryption(ciphertext, keys):
     print('\tRound Key K0: ', formString(keys['key0']))
 
     plaintext = p
-    print('Decrypted Plaintext: ', formString(plaintext))
-    # originalMsg = frombits(plaintext)
-    return plaintext
+    # print('Decrypted Plaintext: ', formString(plaintext))
+    originalMsg = frombits(plaintext)
+    print('Decrypted Plaintext: ', originalMsg)  # converting into string
+    return originalMsg
 
 
 # key = 'Jõ'

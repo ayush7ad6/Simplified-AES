@@ -28,6 +28,7 @@ from encryption import encryption, keyGeneration
 
 print()
 print("-"*30 + "2019221 AYUSH DUBEY" + "-"*30)
+print("\t\thttps://github.com/ayush7ad6/Simplified-AES")
 print()
 
 
@@ -40,9 +41,10 @@ s = Client(('localhost', serverPort))
 
 
 while True:
-    message = input('Plaintext(8 bits only): ')  # taking message input
+    message = input('Plaintext(2 alphabets only): ')  # taking message input
 
-    secretKey = input('Secret Key(8 bits only): ')  # taking secret key input
+    # taking secret key input
+    secretKey = input('Secret Key(2 alphabets only): ')
 
     while True:
         clientKey = {}  # client key parameters input and storing in dict

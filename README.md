@@ -2,6 +2,8 @@
 
 ### _Implementation using Client-Server Communication_
 
+- Enter two alphabets long message and secretkey i.e. 16-bits of data each.
+
 ## Client Server Communication
 
 - ### client.py
@@ -86,6 +88,8 @@
     - formString(): create and returns a string from bit array with each block separated with a space
     - formBlocks(): returns a list from a stirng of bit array with each block separated with a space
     - encodeText(): just calls formBlocks()
+    - toBits(): takes a string and converts it into bit array string
+    - fromBits(): takes an bit array and converts it into string
     - SubNib(): returns a string after substituting nibbles as per simplied aes variant
     - RotNib(): returns a string after rotating rows as per simplied aes variant
     - keyGeneration(): return a dictionary of keys generated from the secret key
@@ -99,6 +103,8 @@
     - formString(): create and returns a string from bit array with each block separated with a space
     - formBlocks(): returns a list from a stirng of bit array with each block separated with a space
     - encodeText(): just calls formBlocks()
+    - toBits(): takes a string and converts it into bit array string
+    - fromBits(): takes an bit array and converts it into string
     - SubNib(): returns a string after substituting nibbles as per simplied aes variant
     - dSubNib(): works same as SubNib() but for decryption using decrypt s-box
     - RotNib(): returns a string after rotating rows as per simplied aes variant

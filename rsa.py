@@ -162,22 +162,22 @@ def decrypt(ciphertext, n, privateKey):
     return plaintext
 
 
-a = rsa(23, 43, 19)
+# a = rsa(23, 43, 19)
 
 
-en = a.encrypt('00000')
-n = a.n
-e = a.pubKey
-d = a.prKey
+# en = a.encrypt('00000')
+# n = a.n
+# e = a.pubKey
+# d = a.prKey
 
-print('d: ', d)
-print('e: ', e)
-print('phi: ', a.phi)
+# print('d: ', d)
+# print('e: ', e)
+# print('phi: ', a.phi)
 
-print(en)
-print(a.ciphertext)
+# print(en)
+# print(a.ciphertext)
 
 
-en2 = a.decrypt(en)
+# en2 = a.decrypt(en)
 
-print(en2)
+# print(en2)
