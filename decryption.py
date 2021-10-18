@@ -15,6 +15,14 @@ encryptSBox = {'0000': '1001', '1000': '0110',
 decryptSBox = {v: k for k, v in encryptSBox.items()}
 
 
+def frombits(bits):
+    chars = []
+    for b in range(len(bits) // 8):
+        byte = bits[b*8:(b+1)*8]
+        chars.append(chr(int(''.join([str(bit) for bit in byte]), 2)))
+    return ''.join(chars)
+
+
 def formString(text):
     ind = 0
     block = ""
@@ -145,48 +153,53 @@ def galoisMultiply(mat, msgList):
 
 
 def decryption(ciphertext, keys):
+    print('Decryption Intemediate Process:')
     # p = encodeText(message)
     p = ciphertext
-    print('CipherText: ', formString(p))
+    print('\tCiphertext: ', formString(p))
 
     # # add round 2 key
     p = int(p, base=2) ^ int(keys['key2'], base=2)
     p = BitArray(uint=p, length=16).bin  # changin int to binary string
-    print('Adding round 2 key: ', formString(p))
+    print('\tAfter Pre-Round Transformation: ', formString(p))
+    print('\tRound Key K2: ', formString(keys['key2']))
 
     # # shift row
     p = RotNib(p)
-    print('After Inverse rotation: ', formString(p))
+    print('\tAfter Round 1 InvShift Row: ', formString(p))
 
     # # nibble substitution
     p = dSubNib(p)
-    print('After Inverse substitution: ', formString(p))
+    print('\tAfter Round 1 InvSubstitute Nibbles: ', formString(p))
 
     # # add round 1 key
     p = int(p, base=2) ^ int(keys['key1'], base=2)
     p = BitArray(uint=p, length=16).bin  # changing int to binary string
-    print('Add round 1 key: ', formString(p))
+    print('\tAfter Round 1 InvAdd Round Key: ', formString(p))
+    print('\tRound Key K1: ', formString(keys['key1']))
 
     # mix column
     M = [[9, 2], [2, 9]]
     p = galoisMultiply(M, p)  # performing GF(16) multiplication
-    print('Mix Column: ', formString(p))
+    print('\tAfter Round 1 InvMix Columns: ', formString(p))
 
     # # row rotation
     p = RotNib(p)
-    print('After rotation: ', formString(p))
+    print('\tAfter Round 2 InvShift Rows: ', formString(p))
 
     # nibble substitution
     p = dSubNib(p)
-    print('After inverse substitution: ', formString(p))
+    print('\tAfter Round 2 InvSubstitute Nibbles: ', formString(p))
 
     # # add round 0 key
     p = int(p, base=2) ^ int(keys['key0'], base=2)
     p = BitArray(uint=p, length=16).bin  # changin int to binary string
-    print('Adding round 0 key: ', formString(p))
+    print('\tAfter Round 2 Add round key: ', formString(p))
+    print('\tRound Key K0: ', formString(keys['key0']))
 
     plaintext = p
-    print('Plaintext: ', plaintext)
+    print('Decrypted Plaintext: ', formString(plaintext))
+    # originalMsg = frombits(plaintext)
     return plaintext
 
 
@@ -198,6 +211,7 @@ def decryption(ciphertext, keys):
 
 # keys = keyGeneration(secreykey)
 
-# cipherText = '0011101101000000'
+# cipherText = '0000011100111000'
 # original = decryption(cipherText, keys)
+# # original = frombits(original)
 # print(original)

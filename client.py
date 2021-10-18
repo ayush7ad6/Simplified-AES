@@ -1,4 +1,5 @@
-import socket
+# import socket
+from multiprocessing.connection import Client, Listener
 import pickle
 import hashlib
 
@@ -9,40 +10,43 @@ from rsa import encrypt, getCiphertext, rsa
 from encryption import encryption, keyGeneration
 
 
-s = socket.socket()
+# s = socket.socket()
 
-print("[+] Client Socket successfully created")
+print("\n[+] Client Socket successfully created\n")
 
 serverPort = 12345
 
 
-s.connect(('127.0.0.1', serverPort))
-s.setblocking(1)
+# s.connect(('127.0.0.1', serverPort))
+# s.setblocking(1)
+s = Client(('localhost', serverPort))
+
 
 while True:
-    message = '1111111111111111'  # input('Plaintext: ')
+    message = input('Plaintext: ')
 
-    secretKey = '0000000000000000'  # input('Secret Key: ')
+    secretKey = input('Secret Key: ')
 
     while True:
         clientKey = {}
-        print('[+] Enter valid client key generation paramters: ')
-        clientKey['p'] = 53  # int(input('p: '))
-        clientKey['q'] = 59  # int(input('q: '))
-        clientKey['e'] = 3  # int(input('e: '))
+        print('\nEnter valid client key generation parameters: \n')
+        clientKey['p'] = int(input('p: '))
+        clientKey['q'] = int(input('q: '))
+        clientKey['e'] = int(input('e: '))
 
         clientRSA = rsa(clientKey['p'], clientKey['q'], clientKey['e'])
         if(clientRSA.f == 0):
             break
 
-    msg1 = '\n[+] Client requesting server public key'
+    msg1 = '\n[+] Client requesting server public key\n'
     s.send(bytes(msg1, 'utf-8'))
 
+    print('\n[+] Receiving Server Public Key\n')
     serverKey = {}
-    serverKey['n'] = int(s.recv(1024).decode())
-    serverKey['e'] = int(s.recv(1024).decode())
+    serverKey['n'] = int(s.recv().decode())
+    serverKey['e'] = int(s.recv().decode())
 
-    print('[+] Server key received {}'.format(serverKey))
+    # print('[+] Server key received {}\n'.format(serverKey))
 
     # encrypting and sending secretkey
     encryptedSecretKey = encrypt(secretKey, serverKey['n'], serverKey['e'])
@@ -51,15 +55,15 @@ while True:
 
     encryptedSecretkeystr = getCiphertext(encryptedSecretKey)
     # print(encryptedSecretkeystr)
-    print('[+] Encrypted Secrety Key: ', encryptedSecretkeystr)
+    print('Encrypted Secrety Key: ', encryptedSecretkeystr)
     s.send(data)
 
     # aes computation
     keys = keyGeneration(secretKey)
     ciphterText = encryption(message, keys)
-    print("Ciphertext: ", ciphterText)
+    # print("\nCiphertext: ", ciphterText)
 
-    print("[+] Sending ciphertext")
+    print("\n[+] Sending ciphertext\n")
     s.send(ciphterText.encode())
 
     # generating signature
@@ -70,7 +74,7 @@ while True:
     signaturestr = getCiphertext(signature)
     print('Digital Signature: ', signaturestr)
 
-    print('[+] Sending Client Public Key')
+    print('\n[+] Sending Client Public Key')
     n = int(clientRSA.n)
     e = int(clientRSA.pubKey)
     s.send(str(n).encode())
@@ -79,7 +83,7 @@ while True:
     # data = pickle.dumps(ck)
     # s.send(data)
 
-    print('[+] Sending Client Signature')
+    print('\n[+] Sending Client Signature\n')
     # print('signature original: ', signature)
     # signature = ['123', '123']
     data = pickle.dumps(signature)

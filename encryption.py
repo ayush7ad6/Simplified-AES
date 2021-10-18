@@ -15,6 +15,16 @@ encryptSBox = {'0000': '1001', '1000': '0110',
 decryptSBox = {v: k for k, v in encryptSBox.items()}
 
 
+def tobits(s):
+    result = []
+    for c in s:
+        bits = bin(ord(c))[2:]
+        bits = '00000000'[len(bits):] + bits
+        result.extend([int(b) for b in bits])
+    result = "".join(str(i) for i in result)
+    return result
+
+
 def formString(text):
     ind = 0
     block = ""
@@ -136,50 +146,56 @@ def galoisMultiply(mat, msgList):
 
 
 def encryption(message, keys):
+    print('Cipher text intermediate computation process: ')
     # p = encodeText(message)
     p = message
-    print('plaintext: ', formString(p))
+    # p = tobits(message)
+
+    print('\tPlaintext: ', formString(p))
 
     # add round 0 key
     p = int(p, base=2) ^ int(keys['key0'], base=2)
     p = BitArray(uint=p, length=16).bin  # changin int to binary string
-    print('Adding round key: ', formString(p))
+    print('\tAfter Pre-Round Transformation: ', formString(p))
+    print('\tRound Key K0: ', formString(keys['key0']))
 
     # ROUND I
 
     # nibble substitution
     p = SubNib(p)
-    print('After substitution: ', formString(p))
+    print('\tAfter Round 1 Substitute Nibbles: ', formString(p))
 
     # row rotation
     p = RotNib(p)
-    print('After rotation: ', formString(p))
+    print('\tAfter Round 1 Shift Rows: ', formString(p))
 
     # mix column
     M = [[1, 4], [4, 1]]
     p = galoisMultiply(M, p)  # performing GF(16) multiplication
-    print('Mix Column: ', formString(p))
+    print('\tAfter Round 1 Mix Columns: ', formString(p))
 
     # add round 1 key
     p = int(p, base=2) ^ int(keys['key1'], base=2)
     p = BitArray(uint=p, length=16).bin  # changing int to binary string
-    print('Add round 1 key: ', formString(p))
+    print('\tAfter Round 1 Add round key: ', formString(p))
+    print('\tRound Key K1: ', formString(keys['key1']))
 
     # ROUND 2
-    print('ROUND 2')
+    # print('ROUND 2')
 
     # nibble substitution
     p = SubNib(p)
-    print('After substitution: ', formString(p))
+    print('\tAfter Round 2 Substitution Nibbles: ', formString(p))
 
     # shift row'
     p = RotNib(p)
-    print('After rotation: ', formString(p))
+    print('\tAfter Round 2 Shift Rows: ', formString(p))
 
     # add round 2 key
     p = int(p, base=2) ^ int(keys['key2'], base=2)
     p = BitArray(uint=p, length=16).bin
-    print('Add round 2 key: ', formString(p))
+    print('\tAfter Round 2 Add round key: ', formString(p))
+    print('\tRound Key K2: ', formString(keys['key2']))
 
     cipherText = p
     print('Ciphertext: ', formString(p))
@@ -188,7 +204,7 @@ def encryption(message, keys):
 
 # key = 'Jõ'
 # secretkey = '1010011100111011'
-# message = '1111111111111111'
+# message = 'ok'
 # # message = 'x('
 
 
