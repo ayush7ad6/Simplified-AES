@@ -49,7 +49,8 @@
 - ### func.py
   - isPrime(): returns True if a number is prime False otherwise
   - gcd(): return the greatest common divisor of an integer
-  - is_coprime(): return True if two integers are co-prime i.e. their gcg is 1
+  - is_coprime(): return True if two integers are co-prime i.e. their gcd is 1
+  - modInverse(): returns the modular inverse of a mod b
   - ConvertToInt(): converts a string to its integer equivalent using each character's ASCII value
   - ConvertToStr(): takes the integer output of ConvertToInt() as an input to compute the string fed in ConvertToInt()
 - ### rsa.py

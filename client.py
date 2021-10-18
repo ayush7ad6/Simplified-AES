@@ -40,9 +40,9 @@ s = Client(('localhost', serverPort))
 
 
 while True:
-    message = input('Plaintext: ')  # taking message input
+    message = input('Plaintext(8 bits only): ')  # taking message input
 
-    secretKey = input('Secret Key: ')  # taking secret key input
+    secretKey = input('Secret Key(8 bits only): ')  # taking secret key input
 
     while True:
         clientKey = {}  # client key parameters input and storing in dict

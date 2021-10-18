@@ -20,7 +20,7 @@
                              decrypt(): decrypts the passes ciphertext with the public key using rsa algorithn principles
 """
 
-from func import ConvertToInt, ConvertToStr, is_coprime, isPrime, is_coprime, ConvertToInt, ConvertToStr
+from func import ConvertToInt, ConvertToStr, gcd, is_coprime, isPrime, is_coprime, ConvertToInt, ConvertToStr, modInverse
 # importing methods from func module
 
 
@@ -91,9 +91,8 @@ class rsa:
     def genKey(self):
         if self.validate() == True:  # generate key when valid key parameters
 
-            k = 2  # taking k  = 2
-            # computing private key using rsa formula
-            d = int((k * self.phi + 1)/self.e)
+            # finding the modular inverse
+            d = modInverse(self.pubKey, self.phi)
             self.prKey = d
             return d
         self.f = 1
@@ -163,17 +162,22 @@ def decrypt(ciphertext, n, privateKey):
     return plaintext
 
 
-# a = rsa(53, 59, 3)
+a = rsa(23, 43, 19)
 
 
-# en = a.encrypt('ayush dubey it is')
-# n = a.n
-# e = a.pubKey
+en = a.encrypt('00000')
+n = a.n
+e = a.pubKey
+d = a.prKey
 
-# print(en)
-# print(a.ciphertext)
+print('d: ', d)
+print('e: ', e)
+print('phi: ', a.phi)
+
+print(en)
+print(a.ciphertext)
 
 
-# en2 = encrypt('ayush dubey it is', n, e)
+en2 = a.decrypt(en)
 
-# print(en2)
+print(en2)

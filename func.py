@@ -6,6 +6,7 @@
                     methods -- isPrime(): returns True if a number is prime False otherwise
                                gcd(): return the greatest common divisor of an integer
                                is_coprime(): return True if two integers are co-prime i.e. their gcg is 1
+                               modInverse(): returns the modular inverse of two positive numbers
                                ConvertToInt(): converts a string to its integer equivalent using each character's ASCII value
                                CovertToStr(): takes the integer output of ConvertToInt() as an input to compute the string fed in ConvertToInt()
 """
@@ -32,6 +33,38 @@ def gcd(p, q):
 
 def is_coprime(x, y):
     return gcd(x, y) == 1
+
+
+def modInverse(a, m):
+    m0 = m
+    y = 0
+    x = 1
+
+    if (m == 1):
+        return 0
+
+    while (a > 1):
+
+        # q is quotient
+        q = a // m
+
+        t = m
+
+        # m is remainder now, process
+        # same as Euclid's algo
+        m = a % m
+        a = t
+        t = y
+
+        # Update x and y
+        y = x - q * y
+        x = t
+
+    # Make x positive
+    if (x < 0):
+        x = x + m0
+
+    return x
 
 
 def ConvertToStr(num):

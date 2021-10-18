@@ -72,7 +72,7 @@ while True:
     ciphterText = (c.recv()).decode()
 
     # decrypting received encrypted secret key with server private key
-    SecretKey = serverRSA.decrypt(encryptedSecretkey)
+    SecretKey = decrypt(encryptedSecretkey, serverRSA.n, serverRSA.prKey)
     SecretKeystr = formString(SecretKey)
     print('Decrypted Secret Key: ', SecretKeystr)
 
