@@ -1,4 +1,4 @@
-# Simplied AES
+# Simplified AES
 
 ### _Implementation using Client-Server Communication_
 
