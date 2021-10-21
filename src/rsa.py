@@ -20,7 +20,7 @@
                              decrypt(): decrypts the passes ciphertext with the public key using rsa algorithn principles
 """
 
-from func import ConvertToInt, ConvertToStr, gcd, is_coprime, isPrime, is_coprime, ConvertToInt, ConvertToStr, modInverse
+from src.func import ConvertToInt, ConvertToStr, gcd, is_coprime, isPrime, is_coprime, ConvertToInt, ConvertToStr, modInverse
 # importing methods from func module
 
 

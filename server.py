@@ -22,9 +22,9 @@ import pickle
 import hashlib
 # created modules
 # decrypt(): rsa decryption, getCiphertext(): returns ciphertext as string, rsa: RSA class
-from rsa import decrypt, getCiphertext, rsa
+from src.rsa import rsa, decrypt, getCiphertext
 # decryption(): aes decryption returns plaintext, keyGeneration(): aes key generation returns dict, formString(): string manipulation
-from decryption import decryption, decryption, keyGeneration, formString
+from src.decryption import decryption, decryption, keyGeneration, formString
 
 
 print()

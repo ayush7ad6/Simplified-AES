@@ -21,9 +21,9 @@ import hashlib
 
 # created modules
 # encrypt(): for encryption returns ciphertext, getCiphertext(): to get ciphertext string, rsa: RSA class
-from rsa import encrypt, getCiphertext, rsa
+from src.rsa import rsa, encrypt, getCiphertext
 # encryption(): for aes encryption, keyGeneration(): for key generation
-from encryption import encryption, keyGeneration
+from src.encryption import encryption, keyGeneration
 
 
 print()
