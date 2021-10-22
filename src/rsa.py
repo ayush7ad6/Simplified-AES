@@ -75,7 +75,8 @@ class rsa:
             flag = False
             # return False
         if self.e >= self.phi or self.e <= 1:
-            print('{} is greater than or equal to phi or less then 2'.format(self.e))
+            print('{} is greater than or equal to phi or less than 2'.format(self.e))
+            flag = False
         if is_coprime(self.e, self.phi) == False:
             print('{} is a factor of phi. Enter a valid value for e'.format(
                 self.e))

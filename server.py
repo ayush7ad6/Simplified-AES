@@ -24,7 +24,7 @@ import hashlib
 # decrypt(): rsa decryption, getCiphertext(): returns ciphertext as string, rsa: RSA class
 from src.rsa import rsa, decrypt, getCiphertext
 # decryption(): aes decryption returns plaintext, keyGeneration(): aes key generation returns dict, formString(): string manipulation
-from src.decryption import decryption, decryption, keyGeneration, formString
+from src.aes import decryption, decryption, keyGeneration
 
 
 print()
@@ -70,16 +70,15 @@ while True:
     encryptedSecretkey = pickle.loads(c.recv())
     # receiving cipher text
     print('[+] Receiving Cipher text\n')
-    ciphterText = (c.recv()).decode()
+    ciphterText = (c.recv())
 
     # decrypting received encrypted secret key with server private key
     SecretKey = decrypt(encryptedSecretkey, serverRSA.n, serverRSA.prKey)
-    SecretKeystr = formString(SecretKey)
+    SecretKeystr = ''.join(SecretKey)
     print('Decrypted Secret Key: ', SecretKeystr)
 
     # aes decryption computation and key generation
-    keys = keyGeneration(SecretKey)
-    message = decryption(ciphterText, keys)
+    message = decryption(ciphterText, SecretKey)
 
     # signature verification via sha256 hash and received client signature
     print('\n[+] Receving client public key\n')  # receiving client public key
@@ -89,6 +88,7 @@ while True:
 
     print('[+] Receiving Client Signature\n')  # receiving client signature
     signature = pickle.loads(c.recv())
+
     digest = hashlib.sha256(message.encode()).hexdigest()
     print('Message Digest: ', digest)
 

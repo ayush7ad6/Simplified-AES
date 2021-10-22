@@ -23,7 +23,7 @@ import hashlib
 # encrypt(): for encryption returns ciphertext, getCiphertext(): to get ciphertext string, rsa: RSA class
 from src.rsa import rsa, encrypt, getCiphertext
 # encryption(): for aes encryption, keyGeneration(): for key generation
-from src.encryption import encryption, keyGeneration
+from src.aes import encryption
 
 
 print()
@@ -41,7 +41,7 @@ s = Client(('localhost', serverPort))
 
 
 while True:
-    message = input('Plaintext(2 alphabets only): ')  # taking message input
+    message = input('Plaintext: ')  # taking message input
 
     # taking secret key input
     secretKey = input('Secret Key(2 alphabets only): ')
@@ -78,14 +78,14 @@ while True:
     s.send(data)
 
     # aes variant key generationa and computation
-    keys = keyGeneration(secretKey)
-    ciphterText = encryption(message, keys)
+    ciphterText = encryption(message, secretKey)
 
     print("\n[+] Sending ciphertext\n")  # sending computed ciphertext
-    s.send(ciphterText.encode())
+    s.send(ciphterText)
 
     # generating signature
     # using sha256 as a one-way hash
+
     digest = hashlib.sha256(message.encode()).hexdigest()
     print('Digest: ', digest)
 
